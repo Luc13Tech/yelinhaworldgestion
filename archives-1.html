@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YELINHAWORLD — ARCHIVES (Company Document Management)</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050810;
+    --navy: #080e1e;
+    --card: #0b1224;
+    --card2: #0e1630;
+    --border: rgba(56,120,255,0.18);
+    --border2: rgba(56,120,255,0.08);
+    --blue: #3878ff;
+    --blue2: #5a9fff;
+    --cyan: #00d4ff;
+    --gold: #f0b429;
+    --green: #00e5a0;
+    --red: #ff4567;
+    --orange: #ff8c42;
+    --text: #e8edf8;
+    --text2: #8a9bc4;
+    --text3: #4a5a80;
+    --glow: 0 0 30px rgba(56,120,255,0.3);
+    --glow2: 0 0 60px rgba(56,120,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(56,120,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(0,212,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 50% at 60% 30%, rgba(240,180,41,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(56,120,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56,120,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  /* ── TOP HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 36px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,14,30,0.85);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-block { display: flex; align-items: center; gap: 16px; }
+
+  .logo-icon {
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    box-shadow: 0 0 24px rgba(56,120,255,0.5);
+    animation: pulse-logo 3s ease-in-out infinite;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  @keyframes pulse-logo {
+    0%,100% { box-shadow: 0 0 24px rgba(56,120,255,0.5); }
+    50% { box-shadow: 0 0 48px rgba(0,212,255,0.7); }
+  }
+
+  .logo-icon svg { width: 24px; height: 24px; fill: white; }
+
+  .logo-text h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, var(--cyan), var(--blue2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo-text p {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .header-tag {
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: rgba(56,120,255,0.06);
+    letter-spacing: 1.5px;
+    color: var(--blue2);
+    font-size: 9px;
+  }
+
+  .back-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px;
+    background: rgba(56,120,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover { background: rgba(56,120,255,0.2); box-shadow: var(--glow); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 40px 36px 28px;
+    border-bottom: 1px solid var(--border2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    line-height: 1.05;
+    background: linear-gradient(135deg, #fff 30%, var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 800px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  /* ── TABS ── */
+  .tabs-nav {
+    display: flex;
+    gap: 0;
+    padding: 0 36px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,14,30,0.6);
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    border: none;
+    background: none;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tab-btn:hover { color: var(--blue2); }
+  .tab-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+  /* ── CONTENT ── */
+  .content { padding: 32px 36px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadein 0.3s ease; }
+
+  @keyframes fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+  /* ── CARDS & GRID ── */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    transition: all 0.2s;
+  }
+
+  .card:hover { border-color: rgba(56,120,255,0.35); box-shadow: var(--glow2); }
+
+  .card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border2);
+  }
+
+  /* ── UPLOAD ZONE ── */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 48px 24px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    background: rgba(56,120,255,0.05);
+  }
+
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--cyan);
+    background: rgba(0,212,255,0.1);
+    box-shadow: var(--glow);
+  }
+
+  .upload-icon { font-size: 48px; color: var(--cyan); margin-bottom: 16px; }
+
+  /* ── FILE LIST ── */
+  .file-list { max-height: 400px; overflow-y: auto; }
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border2);
+    transition: background 0.2s;
+  }
+
+  .file-item:hover { background: rgba(56,120,255,0.05); }
+
+  .file-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    background: var(--card2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .file-info { flex: 1; min-width: 0; }
+  .file-name { font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .file-meta { font-size: 12px; color: var(--text3); display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .file-actions { display: flex; gap: 8px; }
+  .btn-small { padding: 4px 12px; font-size: 11px; border-radius: 4px; }
+
+  .btn-view { background: rgba(0,212,255,0.2); color: var(--cyan); border: 1px solid var(--cyan); }
+  .btn-edit { background: rgba(240,180,41,0.2); color: var(--gold); border: 1px solid var(--gold); }
+  .btn-delete { background: rgba(255,69,103,0.2); color: var(--red); border: 1px solid var(--red); }
+
+  /* ── SEARCH & FILTER ── */
+  .search-row { display: flex; gap: 16px; margin-bottom: 24px; align-items: center; flex-wrap: wrap; }
+  .search-input { flex: 1; min-width: 240px; }
+
+  .filter-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { 
+    padding: 6px 12px; 
+    background: rgba(56,120,255,0.1); 
+    border: 1px solid var(--border); 
+    border-radius: 20px; 
+    font-size: 12px; 
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tag.active { background: var(--cyan); color: var(--black); border-color: var(--cyan); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(5,8,16,0.9); z-index: 1000;
+    display: none; align-items: center; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    width: 90vw; max-width: 600px; max-height: 90vh; overflow-y: auto;
+    margin: 20px;
+  }
+  .modal-header {
+    padding: 24px; border-bottom: 1px solid var(--border2);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-title { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 700; color: var(--cyan); }
+  .modal-close { background: none; border: none; font-size: 24px; color: var(--text3); cursor: pointer; }
+
+  .modal-body { padding: 24px; }
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 12px; color: var(--text3); margin-bottom: 6px; font-family: 'JetBrains Mono', monospace; }
+  .form-input, .form-textarea, .form-select {
+    width: 100%; padding: 12px; border: 1px solid var(--border2); border-radius: 4px;
+    background: var(--card2); color: var(--text); font-size: 14px; font-family: inherit;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(0,212,255,0.2); }
+
+  .form-textarea { min-height: 100px; resize: vertical; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    header, .tabs-nav, .content { padding-left: 16px; padding-right: 16px; }
+    .hero-title { font-size: 28px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .search-row { flex-direction: column; align-items: stretch; }
+    .search-input { min-width: auto; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(56,120,255,0.4); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- HEADER -->
+<header>
+  <a href="javascript:void(0)" onclick="secureNavigate('command.html')" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    Executive Command Center
+  </a>
+  <div class="logo-block">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+    </div>
+    <div class="logo-text">
+      <h1>ARCHIVES</h1>
+      <p>Texas, USA · Document Management</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-tag">Secure Storage</span>
+    <span class="header-tag">Categorized</span>
+    <span class="header-tag">Searchable</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-title">Company Archives</div>
+  <div class="hero-desc">Centralized document management for YELINHAWORLD. Organize supplier contracts, legal documents, employee files, and other critical business records by category. Upload with descriptions, tags, and characteristics for easy search and retrieval.</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('upload', this)">Upload New</button>
+  <button class="tab-btn" onclick="switchTab('suppliers', this)">Supplier Contracts</button>
+  <button class="tab-btn" onclick="switchTab('legal', this)">Legal Documents</button>
+  <button class="tab-btn" onclick="switchTab('employees', this)">Employee Docs</button>
+  <button class="tab-btn" onclick="switchTab('other', this)">Other Categories</button>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- UPLOAD TAB -->
+<div id="tab-upload" class="tab-panel active">
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label">
+        <svg width="16" height="16" fill="currentColor" style="color: var(--cyan);"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 4h5v5H6V4zm11 14H6v-2h11v2zm0-4H6v-2h11v2z"/></svg>
+        Upload Document
+      </div>
+      <div class="upload-zone" onclick="openUploadModal()">
+        <div class="upload-icon">📎</div>
+        <div style="font-size: 16px; margin-bottom: 8px; color: var(--text);">Click or drag files here</div>
+        <div style="font-size: 13px; color: var(--text3);">Supported: PDF, DOCX, images, contracts (max 50MB)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">
+        <svg width="16" height="16" fill="currentColor" style="color: var(--gold);"><path d="M12.29 8.71L9.7 11.3a1 1 0 0 1-1.41 0L7 10.29l-5 5V5h10v3.71zM14 4h-4l-1-1H5a1 1 0 0 0-1 1v14l6-6 4 4V4z"/></svg>
+        Quick Stats
+      </div>
+      <div style="text-align: center;">
+        <div style="font-family: 'Orbitron', sans-serif; font-size: 36px; font-weight: 700; color: var(--cyan); margin-bottom: 8px;" id="totalFiles">0</div>
+        <div style="font-size: 13px; color: var(--text3);">Total Documents</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPLIER CONTRACTS TAB -->
+<div id="tab-suppliers" class="tab-panel">
+  <div class="search-row">
+    <input type="text" class="search-input form-input" id="search-suppliers" placeholder="Search contracts..." oninput="filterFiles('suppliers')">
+    <div class="filter-tags">
+      <span class="tag active" onclick="toggleFilter('suppliers', 'active')">Active</span>
+      <span class="tag" onclick="toggleFilter('suppliers', 'expired')">Expired</span>
+      <span class="tag" onclick="toggleFilter('suppliers', 'pending')">Pending</span>
+    </div>
+  </div>
+  <div class="file-list" id="list-suppliers"></div>
+</div>
+
+<!-- LEGAL TAB -->
+<div id="tab-legal" class="tab-panel">
+  <div class="search-row">
+    <input type="text" class="search-input form-input" id="search-legal" placeholder="Search legal docs..." oninput="filterFiles('legal')">
+  </div>
+  <div class="file-list" id="list-legal"></div>
+</div>
+
+<!-- EMPLOYEE TAB -->
+<div id="tab-employees" class="tab-panel">
+  <div class="search-row">
+    <input type="text" class="search-input form-input" id="search-employees" placeholder="Search employee files..." oninput="filterFiles('employees')">
+  </div>
+  <div class="file-list" id="list-employees"></div>
+</div>
+
+<!-- OTHER TAB -->
+<div id="tab-other" class="tab-panel">
+  <div class="search-row">
+    <input type="text" class="search-input form-input" id="search-other" placeholder="Search all other docs..." oninput="filterFiles('other')">
+  </div>
+  <div class="file-list" id="list-other"></div>
+</div>
+
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="modal-upload">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Document</div>
+      <button class="modal-close" onclick="closeModal('upload')">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="uploadForm">
+        <div class="form-group">
+          <label class="form-label">Select Category</label>
+          <select class="form-select" id="fileCategory" required>
+            <option value="">Choose category...</option>
+            <option value="suppliers">Supplier Contracts</option>
+            <option value="legal">Legal Documents</option>
+            <option value="employees">Employee Documents</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">File</label>
+          <input type="file" class="form-input" id="fileInput" accept=".pdf,.doc,.docx,.txt,.jpg,.png" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="fileDesc" placeholder="Brief description of the document..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Characteristics / Tags</label>
+          <input type="text" class="form-input" id="fileTags" placeholder="e.g. contract, 2026, supplier-X, confidential">
+        </div>
+        <button type="submit" class="btn btn-gold" style="width: 100%;">Upload & Archive</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Document</div>
+      <button class="modal-close" onclick="closeModal('edit')">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="editForm">
+        <input type="hidden" id="editId">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="editCategory"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="editDesc"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tags</label>
+          <input type="text" class="form-input" id="editTags">
+        </div>
+        <button type="submit" class="btn btn-gold" style="width: 100%;">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+let files = JSON.parse(localStorage.getItem('yelinhaArchives')) || [];
+let currentFilter = {};
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  renderFileList(name);
+  updateStats();
+}
+
+function openUploadModal() {
+  document.getElementById('modal-upload').classList.add('active');
+}
+
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('active');
+}
+
+// Upload form
+document.getElementById('uploadForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const category = formData.get('fileCategory');
+  const file = formData.get('fileInput');
+  const desc = formData.get('fileDesc');
+  const tags = formData.get('fileTags');
+
+  if (!file || !category) return alert('Please select file and category');
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const fileData = {
+      id: Date.now(),
+      name: file.name,
+      category: category,
+      desc: desc,
+      tags: tags,
+      size: (file.size / 1024 / 1024).toFixed(1) + ' MB',
+      date: new Date().toLocaleDateString(),
+      data: e.target.result,
+      type: file.type.startsWith('image/') ? 'image' : 'doc'
+    };
+    files.unshift(fileData);
+    saveFiles();
+    closeModal('upload');
+    renderFileList(category);
+    updateStats();
+    notify('Document archived successfully');
+  };
+  reader.readAsDataURL(file);
+});
+
+// Edit form
+document.getElementById('editForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const id = parseInt(document.getElementById('editId').value);
+  const file = files.find(f => f.id === id);
+  if (file) {
+    file.category = document.getElementById('editCategory').value;
+    file.desc = document.getElementById('editDesc').value;
+    file.tags = document.getElementById('editTags').value;
+    saveFiles();
+    renderFileList(file.category);
+    updateStats();
+    closeModal('edit');
+    notify('Document updated');
+  }
+});
+
+function renderFileList(category) {
+  const listId = 'list-' + category;
+  const container = document.getElementById(listId);
+  const filtered = files.filter(f => f.category === category && matchesFilter(f, category));
+  container.innerHTML = filtered.map(file => `
+    <div class="file-item">
+      <div class="file-thumb">${file.type === 'image' ? `<img src="${file.data}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : '📄'}</div>
+      <div class="file-info">
+        <div class="file-name">${file.name}</div>
+        <div class="file-meta">
+          <span style="color: var(--cyan);">${file.size}</span>
+          <span style="color: var(--text3);">${file.date}</span>
+          <span style="color: var(--gold);">${file.tags}</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text2); margin-top: 4px;">${file.desc}</div>
+      </div>
+      <div class="file-actions">
+        <button class="btn-small btn-view" onclick="viewFile(${file.id})">View</button>
+        <button class="btn-small btn-edit" onclick="editFile(${file.id})">Edit</button>
+        <button class="btn-small btn-delete" onclick="deleteFile(${file.id})">Delete</button>
+      </div>
+    </div>
+  `).join('') || '<div style="text-align:center;padding:40px;color:var(--text3);">No documents yet. Upload your first file!</div>';
+}
+
+function matchesFilter(file, cat) {
+  if (!currentFilter[cat]) return true;
+  const filter = currentFilter[cat];
+  return file.tags.toLowerCase().includes(filter.toLowerCase()) || file.desc.toLowerCase().includes(filter.toLowerCase());
+}
+
+function filterFiles(cat) {
+  const searchId = 'search-' + cat;
+  const q = document.getElementById(searchId).value.toLowerCase();
+  currentFilter[cat] = q;
+  renderFileList(cat);
+}
+
+function toggleFilter(cat, tag) {
+  // Simple tag filter toggle (extendable)
+  document.querySelectorAll(`#tab-${cat} .tag`).forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  filterFiles(cat);
+}
+
+function viewFile(id) {
+  const file = files.find(f => f.id === id);
+  if (file.type === 'image') {
+    window.open(file.data, '_blank');
+  } else {
+    const a = document.createElement('a');
+    a.href = file.data;
+    a.download = file.name;
+    a.click();
+  }
+}
+
+function editFile(id) {
+  const file = files.find(f => f.id === id);
+  document.getElementById('editId').value = file.id;
+  document.getElementById('editCategory').innerHTML = categories.map(c => `<option ${c === file.category ? 'selected' : ''} value="${c}">${getCategoryName(c)}</option>`).join('');
+  document.getElementById('editDesc').value = file.desc;
+  document.getElementById('editTags').value = file.tags;
+  document.getElementById('modal-edit').classList.add('active');
+}
+
+function deleteFile(id) {
+  if (confirm('Delete this document?')) {
+    files = files.filter(f => f.id !== id);
+    saveFiles();
+    renderFileList(files[0]?.category || 'upload');
+    updateStats();
+    notify('Document deleted');
+  }
+}
+
+function saveFiles() {
+  localStorage.setItem('yelinhaArchives', JSON.stringify(files));
+}
+
+function updateStats() {
+  document.getElementById('totalFiles').textContent = files.length;
+}
+
+const categories = ['suppliers', 'legal', 'employees', 'other'];
+function getCategoryName(cat) {
+  const names = {suppliers: 'Supplier Contracts', legal: 'Legal Documents', employees: 'Employee Documents', other: 'Other'};
+  return names[cat] || cat;
+}
+
+// Drag & drop
+document.querySelector('.upload-zone').addEventListener('dragover', (e) => {
+  e.preventDefault();
+  e.currentTarget.classList.add('dragover');
+});
+document.querySelector('.upload-zone').addEventListener('dragleave', (e) => {
+  e.currentTarget.classList.remove('dragover');
+});
+document.querySelector('.upload-zone').addEventListener('drop', (e) => {
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  document.getElementById('fileInput').files = e.dataTransfer.files;
+});
+
+updateStats();
+</script>
+
+<div id="navPasswordOverlay" style="display:none;position:fixed;inset:0;background:rgba(4,14,31,0.88);z-index:9999;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif">
+  <div style="background:#0c1830;border:1px solid #1f3a5f;border-radius:10px;padding:28px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,0.6)">
+    <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:#00c8ff;letter-spacing:1px;margin-bottom:6px">ACCESS VERIFICATION</div>
+    <div style="font-size:11px;color:#8aa0b8;margin-bottom:16px">Enter password to leave this platform.</div>
+    <input type="password" id="navPasswordInput" placeholder="••••" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #2a4a6f;background:#08101e;color:#fff;font-size:14px;margin-bottom:8px;box-sizing:border-box" onkeydown="if(event.key==='Enter')confirmNavPassword()">
+    <div id="navPasswordError" style="color:#ff5d5d;font-size:11px;min-height:14px;margin-bottom:10px"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="cancelNavPassword()" style="flex:1;padding:9px;border-radius:6px;border:1px solid #2a4a6f;background:transparent;color:#cfe9ff;cursor:pointer;font-size:12px">Cancel</button>
+      <button onclick="confirmNavPassword()" style="flex:1;padding:9px;border-radius:6px;border:none;background:#00c8ff;color:#001018;cursor:pointer;font-weight:600;font-size:12px">Confirm</button>
+    </div>
+  </div>
+</div>
+<script>
+let _navPendingUrl=null;
+function secureNavigate(url){
+  _navPendingUrl=url;
+  document.getElementById('navPasswordInput').value='';
+  document.getElementById('navPasswordError').textContent='';
+  document.getElementById('navPasswordOverlay').style.display='flex';
+  setTimeout(()=>document.getElementById('navPasswordInput').focus(),50);
+}
+function cancelNavPassword(){
+  _navPendingUrl=null;
+  document.getElementById('navPasswordOverlay').style.display='none';
+}
+function confirmNavPassword(){
+  const val=document.getElementById('navPasswordInput').value;
+  if(val==='2005'){
+    const url=_navPendingUrl;
+    document.getElementById('navPasswordOverlay').style.display='none';
+    if(url) window.location.href=url;
+  } else {
+    document.getElementById('navPasswordError').textContent='Incorrect password. Access denied.';
+  }
+}
+</script>
+</body>
+</html>
+

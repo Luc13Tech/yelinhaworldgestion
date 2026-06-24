@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YelinhaWorld — Yelinha1000 Supply Chain Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#040e1f;--blue1:#0a1f3f;--blue2:#0d2d5e;--accent:#00c8ff;--accent2:#0074d9;
+    --gold:#f0a500;--success:#00d68f;--warn:#ffb300;--danger:#ff4757;
+    --text:#e8f4fd;--muted:#7da8c9;--border:rgba(0,200,255,0.18);
+    --card:rgba(10,31,63,0.85);--radius:10px;
+  }
+  body{background:var(--navy);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh}
+  h1,h2,h3,.mono{font-family:'Orbitron',monospace}
+  .app{display:flex;flex-direction:column;min-height:100vh}
+
+  /* HEADER */
+  .header{background:linear-gradient(135deg,var(--blue1),var(--blue2));border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px;flex-shrink:0}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-icon{width:36px;height:36px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center}
+  .logo-icon svg{width:22px;height:22px;fill:var(--navy)}
+  .logo-text{font-family:'Orbitron';font-size:13px;font-weight:700;letter-spacing:1px;color:var(--accent)}
+  .logo-sub{font-size:10px;color:var(--muted);letter-spacing:2px}
+  .header-stats{display:flex;gap:16px}
+  .hstat{text-align:right}
+  .hstat-val{font-family:'Orbitron';font-size:13px;font-weight:700;color:var(--gold)}
+  .hstat-lbl{font-size:10px;color:var(--muted);letter-spacing:1px}
+  .header-badge{background:rgba(0,200,255,0.12);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--accent);font-family:'Orbitron';letter-spacing:1px}
+
+  /* NAV */
+  .nav{background:var(--blue1);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 16px;flex-shrink:0}
+  .nav-btn{padding:12px 16px;border:none;background:none;color:var(--muted);font-family:'DM Sans';font-size:12px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-weight:500;letter-spacing:.5px}
+  .nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .nav-btn:hover:not(.active){color:var(--text)}
+
+  /* BODY */
+  .body{flex:1;overflow-y:auto;padding:20px}
+
+  /* SCREEN */
+  .screen{display:none}
+  .screen.active{display:block}
+
+  /* CARDS */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;backdrop-filter:blur(4px)}
+  .card-title{font-family:'Orbitron';font-size:11px;letter-spacing:1px;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .card-title::before{content:'';display:block;width:3px;height:14px;background:var(--accent);border-radius:2px}
+
+  /* GRID */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+  /* KPI */
+  .kpi{text-align:center;padding:14px 10px}
+  .kpi-val{font-family:'Orbitron';font-size:18px;font-weight:700;color:var(--gold)}
+  .kpi-lbl{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.5px}
+  .kpi-delta{font-size:10px;color:var(--success);margin-top:3px}
+
+  /* TABLE */
+  .tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .tbl th{color:var(--muted);font-weight:500;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);font-family:'Orbitron';font-size:10px;letter-spacing:.5px}
+  .tbl td{padding:9px 10px;border-bottom:1px solid rgba(0,200,255,0.07);vertical-align:middle}
+  .tbl tr:hover td{background:rgba(0,200,255,0.04)}
+
+  /* BADGES */
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;letter-spacing:.3px}
+  .b-green{background:rgba(0,214,143,0.15);color:var(--success);border:1px solid rgba(0,214,143,0.3)}
+  .b-blue{background:rgba(0,200,255,0.12);color:var(--accent);border:1px solid var(--border)}
+  .b-gold{background:rgba(240,165,0,0.15);color:var(--gold);border:1px solid rgba(240,165,0,0.3)}
+  .b-warn{background:rgba(255,179,0,0.15);color:var(--warn);border:1px solid rgba(255,179,0,0.3)}
+  .b-red{background:rgba(255,71,87,0.15);color:var(--danger);border:1px solid rgba(255,71,87,0.3)}
+  .b-gray{background:rgba(125,168,201,0.1);color:var(--muted);border:1px solid rgba(125,168,201,0.2)}
+
+  /* PROGRESS */
+  .prog-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-top:6px}
+  .prog-fill{height:100%;border-radius:3px;transition:width .6s}
+
+  /* BUTTONS */
+  .btn{padding:8px 14px;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans';font-size:12px;font-weight:500;transition:all .2s}
+  .btn-primary{background:var(--accent2);color:#fff}
+  .btn-primary:hover{background:#0060b8}
+  .btn-outline{background:none;border:1px solid var(--border);color:var(--accent)}
+  .btn-outline:hover{background:rgba(0,200,255,0.08)}
+  .btn-gold{background:var(--gold);color:var(--navy);font-weight:700}
+  .btn-gold:hover{background:#d4920a}
+  .btn-sm{padding:5px 10px;font-size:11px}
+
+  /* FORM */
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .form-group{display:flex;flex-direction:column;gap:4px}
+  .form-label{font-size:11px;color:var(--muted);letter-spacing:.5px}
+  .form-input{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-family:'DM Sans';font-size:12px}
+  .form-input:focus{outline:none;border-color:var(--accent)}
+  .form-select{background:rgba(10,31,63,0.9);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-family:'DM Sans';font-size:12px}
+  .form-select:focus{outline:none;border-color:var(--accent)}
+
+  /* DIVIDER */
+  .divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+
+  /* TIMELINE */
+  .timeline{position:relative;padding-left:20px}
+  .timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--border)}
+  .tl-item{position:relative;padding-bottom:16px}
+  .tl-dot{position:absolute;left:-17px;top:3px;width:10px;height:10px;border-radius:50%;border:2px solid var(--accent);background:var(--navy)}
+  .tl-dot.done{background:var(--success);border-color:var(--success)}
+  .tl-dot.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .tl-date{font-size:10px;color:var(--muted);font-family:'Orbitron';letter-spacing:.5px}
+  .tl-title{font-size:13px;font-weight:500;color:var(--text);margin-top:2px}
+  .tl-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(4,14,31,0.85);z-index:100;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--blue1);border:1px solid var(--border);border-radius:12px;padding:20px;width:560px;max-width:95vw;max-height:85vh;overflow-y:auto}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .modal-title{font-family:'Orbitron';font-size:12px;color:var(--accent);letter-spacing:1px}
+  .modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px}
+  .modal-close:hover{color:var(--text)}
+
+  /* SCORE METER */
+  .score-ring{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .score-val{font-family:'Orbitron';font-size:22px;font-weight:700}
+  .score-lbl{font-size:10px;color:var(--muted);letter-spacing:.5px;text-align:center}
+
+  /* ALERT */
+  .alert{border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start;font-size:12px}
+  .alert-warn{background:rgba(255,179,0,0.1);border:1px solid rgba(255,179,0,0.25);color:var(--warn)}
+  .alert-info{background:rgba(0,200,255,0.08);border:1px solid var(--border);color:var(--muted)}
+
+  /* NEGOTIATION METER */
+  .neg-slider{width:100%;height:8px;accent-color:var(--accent);cursor:pointer}
+  .neg-display{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+
+  .sec-title{font-family:'Orbitron';font-size:12px;color:var(--text);letter-spacing:1px;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .row-flex{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+
+  .chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;background:rgba(0,200,255,0.08);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--muted)}
+
+  .notification{position:fixed;bottom:20px;right:20px;background:var(--success);color:#000;padding:10px 16px;border-radius:8px;font-size:12px;font-weight:600;z-index:200;transform:translateY(60px);transition:transform .3s;pointer-events:none}
+  .notification.show{transform:translateY(0)}
+
+  @media(max-width:540px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}.header-stats{display:none}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+      </div>
+      <div>
+        <div class="logo-text">YELINHAWORLD</div>
+        <div class="logo-sub">YELINHA1000 · SUPPLY CHAIN PORTAL</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><div class="hstat-val">$3.5B</div><div class="hstat-lbl">SC BUDGET / 50 A/C</div></div>
+      <div class="hstat"><div class="hstat-val">2028</div><div class="hstat-lbl">FIRST FLIGHT</div></div>
+      <div class="hstat"><div class="hstat-val">2030</div><div class="hstat-lbl">FIRST DELIVERY</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <a href="javascript:void(0)" onclick="secureNavigate('command.html')" style="text-decoration:none">
+        <button style="
+          display:flex;align-items:center;gap:8px;
+          padding:8px 16px;
+          background:none;
+          border:1px solid rgba(0,200,255,0.4);
+          border-radius:6px;
+          font-family:'Orbitron',monospace;
+          font-size:9px;font-weight:700;
+          letter-spacing:1.5px;color:#00c8ff;
+          cursor:pointer;
+          transition:all 0.2s;
+          text-transform:uppercase;
+        "
+        onmouseover="this.style.background='rgba(0,200,255,0.1)';this.style.boxShadow='0 0 16px rgba(0,200,255,0.3)'"
+        onmouseout="this.style.background='none';this.style.boxShadow='none'"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#00c8ff"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+          ← Command Center
+        </button>
+      </a>
+      <div class="header-badge">DELAWARE C-CORP</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showScreen('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showScreen('suppliers')">T-1 Suppliers</button>
+    <button class="nav-btn" onclick="showScreen('components')">Components & Pricing</button>
+    <button class="nav-btn" onclick="showScreen('contracts')">Contract Workflow</button>
+    <button class="nav-btn" onclick="showScreen('negotiation')">Price Negotiation</button>
+    <button class="nav-btn" onclick="showScreen('budget')">Budget Tracker</button>
+    <button class="nav-btn" onclick="showScreen('timeline')">Program Timeline</button>
+  </nav>
+
+  <div class="body">
+
+    <!-- DASHBOARD -->
+    <div id="screen-dashboard" class="screen active">
+      <div class="sec-title">Program Overview — Yelinha1000 Supply Chain Command Center</div>
+      <div class="g4" style="margin-bottom:14px">
+        <div class="card kpi"><div class="kpi-val">47</div><div class="kpi-lbl">T-1 SUPPLIERS</div><div class="kpi-delta">↑ 12 qualified</div></div>
+        <div class="card kpi"><div class="kpi-val">$70M</div><div class="kpi-lbl">UNIT COST TARGET</div><div class="kpi-delta">per aircraft</div></div>
+        <div class="card kpi"><div class="kpi-val">83</div><div class="kpi-lbl">COMPONENTS</div><div class="kpi-delta">tracked categories</div></div>
+        <div class="card kpi"><div class="kpi-val">68%</div><div class="kpi-lbl">CONTRACTS DRAFTED</div><div class="kpi-delta">↑ 8% this month</div></div>
+      </div>
+      <div class="g2" style="margin-bottom:14px">
+        <div class="card">
+          <div class="card-title">Budget Allocation by System</div>
+          <div id="budgetChart" style="padding:4px 0"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Supplier Qualification Status</div>
+          <div id="supplierStatus" style="padding:4px 0"></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Recent Contract Activity</div>
+          <table class="tbl">
+            <tr><th>Supplier</th><th>Component</th><th>Value</th><th>Status</th></tr>
+            <tr><td>Spirit AeroSystems</td><td>Fuselage Sections</td><td>$420M</td><td><span class="badge b-gold">Negotiating</span></td></tr>
+            <tr><td>Safran</td><td>Landing Gear</td><td>$180M</td><td><span class="badge b-gold">Negotiating</span></td></tr>
+            <tr><td>Honeywell</td><td>Avionics Suite</td><td>$210M</td><td><span class="badge b-gold">Negotiating</span></td></tr>
+            <tr><td>Collins Aerospace</td><td>Flight Controls</td><td>$165M</td><td><span class="badge b-gold">Negotiating</span></td></tr>
+            <tr><td>GKN Aerospace</td><td>Wing Panels</td><td>$380M</td><td><span class="badge b-gold">Negotiating</span></td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Key Milestones</div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-date">Q2 2026</div><div class="tl-title">Company Formation & HQ Setup</div><div class="tl-desc">Delaware C-Corp incorporation, Texas HQ setup, FAA liaison established</div></div>
+            <div class="tl-item"><div class="tl-dot active"></div><div class="tl-date">OCT 2026</div><div class="tl-title">Official Program Launch</div><div class="tl-desc">Investor event, T-1 RFP release, design freeze kickoff</div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Q1 2027</div><div class="tl-title">T-1 Contract Signings</div><div class="tl-desc">All major structural & propulsion contracts finalized</div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Q3 2027</div><div class="tl-title">PDR — Preliminary Design Review</div><div class="tl-desc">FAA DER sign-off on structural concepts</div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">2028</div><div class="tl-title">First Flight — Yelinha1000</div><div class="tl-desc">66.8m / 2× RR Trent XWB, KHOU test base</div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">2030</div><div class="tl-title">First Customer Delivery</div><div class="tl-desc">FAA TC obtained, entry into service</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPLIERS -->
+    <div id="screen-suppliers" class="screen">
+      <div class="sec-title">T-1 Tier-1 Supplier Registry — Yelinha1000</div>
+      <div class="row-flex" style="margin-bottom:14px">
+        <input class="form-input" id="supplierSearch" placeholder="Search supplier or component..." style="width:240px" oninput="filterSuppliers()">
+        <select class="form-select" id="catFilter" onchange="filterSuppliers()">
+          <option value="">All categories</option>
+          <option>Structures</option>
+          <option>Propulsion</option>
+          <option>Avionics</option>
+          <option>Flight Controls</option>
+          <option>Systems</option>
+          <option>Interior</option>
+          <option>Landing Gear</option>
+          <option>Safety</option>
+        </select>
+        <button class="btn btn-primary" onclick="openModal('addSupplier')">+ Add Supplier</button>
+      </div>
+      <div class="card">
+        <table class="tbl" id="supplierTable">
+          <tr><th>Supplier</th><th>Category</th><th>Components Supplied</th><th>Country</th><th>Contract Value (50 A/C)</th><th>Cert</th><th>Status</th><th></th></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- COMPONENTS & PRICING -->
+    <div id="screen-components" class="screen">
+      <div class="sec-title">Components, Sections & Price Reference — Per Aircraft Unit</div>
+      <div class="alert alert-info">All prices reflect negotiated target unit cost for 50-aircraft production run. Actual costs subject to final contract negotiation and escalation clauses.</div>
+      <div class="row-flex">
+        <select class="form-select" id="sysFilter" onchange="filterComponents()">
+          <option value="">All systems</option>
+          <option>Structures</option>
+          <option>Propulsion</option>
+          <option>Avionics & Navigation</option>
+          <option>Flight Controls</option>
+          <option>Safety & Emergency</option>
+          <option>Interior & Cabin</option>
+          <option>Utilities & Power</option>
+          <option>Landing Gear</option>
+        </select>
+        <input class="form-input" id="compSearch" placeholder="Search component..." style="width:200px" oninput="filterComponents()">
+      </div>
+      <div class="card" style="margin-top:12px">
+        <table class="tbl" id="compTable">
+          <tr><th>#</th><th>Component / Section</th><th>System</th><th>Qty/A/C</th><th>Unit Price (Est.)</th><th>50 A/C Total</th><th>Supplier</th><th>Negotiation Room</th></tr>
+        </table>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">Total Estimated Cost vs Budget</div>
+        <div id="costSummary"></div>
+      </div>
+    </div>
+
+    <!-- CONTRACT WORKFLOW -->
+    <div id="screen-contracts" class="screen">
+      <div class="sec-title">Contract Engagement Workflow — How YELINHAWORLD Contracts T-1 Suppliers</div>
+      <div class="g2" style="margin-bottom:14px">
+        <div class="card">
+          <div class="card-title">6-Phase Contract Process</div>
+          <div style="padding:4px 0" id="contractPhases"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Generate New RFP / Contract</div>
+          <div class="form-row">
+            <div class="form-group"><div class="form-label">Supplier Name</div><input class="form-input" id="c_supplier" placeholder="e.g. Spirit AeroSystems"></div>
+            <div class="form-group"><div class="form-label">Component / Section</div><input class="form-input" id="c_comp" placeholder="e.g. Fuselage Section 41"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><div class="form-label">Target Unit Price ($M)</div><input class="form-input" id="c_price" type="number" placeholder="e.g. 8.4"></div>
+            <div class="form-group"><div class="form-label">Quantity (50 A/C run)</div><input class="form-input" id="c_qty" type="number" placeholder="50"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><div class="form-label">Delivery Milestone</div><input class="form-input" id="c_del" placeholder="e.g. Q2 2027"></div>
+            <div class="form-group"><div class="form-label">Contract Type</div>
+              <select class="form-select" id="c_type">
+                <option>Firm Fixed Price (FFP)</option>
+                <option>Cost Plus Fixed Fee (CPFF)</option>
+                <option>Time & Materials (T&M)</option>
+                <option>Indefinite Delivery (IDIQ)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:12px"><div class="form-label">Special Clauses</div>
+            <select class="form-select" id="c_clause">
+              <option>Liquidated Damages + Escrow</option>
+              <option>Price Escalation + Inflation Index</option>
+              <option>IP Ownership + NDA</option>
+              <option>Performance Incentive Fee</option>
+              <option>FAA DER Compliance Clause</option>
+            </select>
+          </div>
+          <button class="btn btn-gold" style="width:100%" onclick="generateContract()">Generate Contract Draft ↗</button>
+        </div>
+      </div>
+      <div class="card" id="contractOutput" style="display:none">
+        <div class="card-title">Generated Contract Summary</div>
+        <div id="contractContent" style="font-size:12px;line-height:1.8;color:var(--text)"></div>
+      </div>
+    </div>
+
+    <!-- NEGOTIATION -->
+    <div id="screen-negotiation" class="screen">
+      <div class="sec-title">Price Negotiation Engine — Interactive Lever Simulator</div>
+      <div class="alert alert-warn">CDO / CFO / Legal sign-off required before sending any counter-offer. Target: achieve 8–14% savings vs. supplier initial quote.</div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Negotiation Levers</div>
+          <div id="negLevers"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Negotiation Score & Outcome</div>
+          <div id="negResult"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">YELINHAWORLD Negotiation Tactics</div>
+        <div id="negTactics"></div>
+      </div>
+    </div>
+
+    <!-- BUDGET -->
+    <div id="screen-budget" class="screen">
+      <div class="sec-title">Budget Tracker — $3.5 Billion / 50 Aircraft Supply Chain</div>
+      <div class="g4" style="margin-bottom:14px">
+        <div class="card kpi"><div class="kpi-val">$3,500M</div><div class="kpi-lbl">TOTAL SC BUDGET</div></div>
+        <div class="card kpi"><div class="kpi-val">$70M</div><div class="kpi-lbl">PER AIRCRAFT</div></div>
+        <div class="card kpi"><div class="kpi-val">$2,890M</div><div class="kpi-lbl">COMMITTED</div><div class="kpi-delta" style="color:var(--warn)">82.6% allocated</div></div>
+        <div class="card kpi"><div class="kpi-val">$610M</div><div class="kpi-lbl">CONTINGENCY</div><div class="kpi-delta">17.4% reserve</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Budget Breakdown by System — 50 Aircraft Production Run</div>
+        <div id="budgetBreakdown"></div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div id="screen-timeline" class="screen">
+      <div class="sec-title">Program Timeline — Yelinha1000 Development & Certification</div>
+      <div class="card">
+        <div id="gantt"></div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+</div><!-- /app -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-addSupplier">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Register New T-1 Supplier</div>
+      <button class="modal-close" onclick="closeModal('addSupplier')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><div class="form-label">Company Name</div><input class="form-input" id="ns_name" placeholder="Supplier name"></div>
+      <div class="form-group"><div class="form-label">Country</div><input class="form-input" id="ns_country" placeholder="Country"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><div class="form-label">Category</div>
+        <select class="form-select" id="ns_cat">
+          <option>Structures</option><option>Propulsion</option><option>Avionics</option>
+          <option>Flight Controls</option><option>Systems</option><option>Interior</option>
+          <option>Landing Gear</option><option>Safety</option>
+        </select>
+      </div>
+      <div class="form-group"><div class="form-label">AS9100 Certified</div>
+        <select class="form-select" id="ns_cert"><option>Yes</option><option>In Progress</option><option>No</option></select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px"><div class="form-label">Primary Component</div><input class="form-input" id="ns_comp" placeholder="e.g. Carbon fiber wing skins"></div>
+    <div class="form-row">
+      <div class="form-group"><div class="form-label">Contract Value ($M)</div><input class="form-input" id="ns_val" type="number" placeholder="e.g. 120"></div>
+      <div class="form-group"><div class="form-label">Status</div>
+        <select class="form-select" id="ns_status"><option>Qualified</option><option>Under Evaluation</option><option>RFP Sent</option><option>Contracted</option></select>
+      </div>
+    </div>
+    <button class="btn btn-gold" style="width:100%" onclick="addSupplier()">Add to Registry ↗</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-signContract">
+  <div class="modal" style="width:420px">
+    <div class="modal-header">
+      <div class="modal-title" id="sigModalTitle">Sign Contract</div>
+      <button class="modal-close" onclick="closeModal('signContract')">✕</button>
+    </div>
+    <div class="alert alert-info" style="font-size:11px">By signing, you confirm authority to bind this party to the terms of this agreement.</div>
+    <div class="form-group" style="margin-bottom:12px"><div class="form-label">Full Name</div><input class="form-input" id="sig_name" placeholder="e.g. Jonathan A. Reyes"></div>
+    <div class="form-group" style="margin-bottom:14px"><div class="form-label">Title / Position</div><input class="form-input" id="sig_title" placeholder="e.g. Chief Executive Officer"></div>
+    <button class="btn btn-gold" style="width:100%" onclick="confirmSignature()">Apply Signature ↗</button>
+  </div>
+</div>
+
+<div class="notification" id="notification">Action completed successfully</div>
+
+<script>
+const SUPPLIERS_DATA = [
+  {name:'Spirit AeroSystems',cat:'Structures',comp:'Fuselage Sections (41,43,44,46,47)',country:'USA',val:420,cert:'AS9100D',status:'Negotiating'},
+  {name:'GKN Aerospace',cat:'Structures',comp:'Wing Panels & Wing Box Assembly',country:'UK',val:380,cert:'AS9100D',status:'Negotiating'},
+  {name:'Safran Landing Systems',cat:'Landing Gear',comp:'Main & Nose Landing Gear (complete)',country:'France',val:180,cert:'AS9100D',status:'Negotiating'},
+  {name:'Honeywell Aerospace',cat:'Avionics & Navigation',comp:'Avionics Suite, Weather Radar, TCAS, GPS',country:'USA',val:210,cert:'AS9100D',status:'Negotiating'},
+  {name:'Collins Aerospace',cat:'Flight Controls',comp:'FBW Computers, Primary Flight Control Computers ×4, Backup',country:'USA',val:165,cert:'AS9100D',status:'Negotiating'},
+  {name:'Safran Nacelles',cat:'Propulsion',comp:'Engine Nacelles & Pylons (×2 RR Trent XWB)',country:'France',val:140,cert:'AS9100D',status:'Negotiating'},
+  {name:'Liebherr Aerospace',cat:'Systems',comp:'Landing Gear Actuation, Air Management, ECS',country:'Germany',val:95,cert:'AS9100D',status:'Negotiating'},
+  {name:'Moog Inc.',cat:'Flight Controls',comp:'Fly-By-Wire Actuators, Flight Control Surfaces',country:'USA',val:88,cert:'AS9100D',status:'Negotiating'},
+  {name:'Elbit Systems',cat:'Avionics & Navigation',comp:'Navigation Systems, ELT ×2, Collision Avoidance ×2',country:'Israel',val:72,cert:'AS9100D',status:'Negotiating'},
+  {name:'Hutchinson Aerospace',cat:'Systems',comp:'Fuel System, Outflow Valve, RAM Air Turbine',country:'France',val:65,cert:'AS9100D',status:'Negotiating'},
+  {name:'Diehl Aviation',cat:'Interior',comp:'Cabin Interior, Galleys, Overhead Bins, Cabin Systems',country:'Germany',val:120,cert:'AS9100D',status:'Negotiating'},
+  {name:'Zodiac Aerospace',cat:'Interior',comp:'Seats, IFE, Passenger Service Units',country:'France',val:85,cert:'AS9100D',status:'Negotiating'},
+  {name:'Safran Electrical',cat:'Utilities & Power',comp:'Electrical Power Centers ×6, Wiring Harnesses',country:'France',val:78,cert:'AS9100D',status:'Negotiating'},
+  {name:'UTC Aerospace',cat:'Safety',comp:'Fire Extinguishing Bottles ×2, Fire Detection',country:'USA',val:35,cert:'AS9100D',status:'Negotiating'},
+  {name:'L3Harris Technologies',cat:'Safety',comp:'Flight Data Recorders ×2, CVR, ELT',country:'USA',val:28,cert:'AS9100D',status:'Negotiating'},
+  {name:'Stelia Aerospace',cat:'Structures',comp:'Empennage (H-Stab, V-Stab), Tail Cone',country:'France',val:160,cert:'AS9100D',status:'Negotiating'},
+  {name:'Ducommun',cat:'Structures',comp:'Horizontal Stabilizer Panels',country:'USA',val:55,cert:'AS9100D',status:'Negotiating'},
+  {name:'Cobham Aviation',cat:'Systems',comp:'Ku-Band Antenna, Satellite Comms',country:'UK',val:42,cert:'AS9100D',status:'Negotiating'},
+  {name:'Safran Power Units',cat:'Utilities & Power',comp:'GPU Interface, APU Systems',country:'France',val:48,cert:'AS9100D',status:'Negotiating'},
+  {name:'Zodiac Water Systems',cat:'Systems',comp:'Water Tank 100gal, Gray Water Mast, Waste Tank 100gal',country:'France',val:18,cert:'AS9100D',status:'Negotiating'},
+  {name:'UTC Fire & Security',cat:'Safety',comp:'Emergency Evacuation Systems, Slides',country:'USA',val:32,cert:'AS9100D',status:'Negotiating'},
+  {name:'Aerolia',cat:'Structures',comp:'Navigation Lights, Aircraft Lights Assembly',country:'France',val:12,cert:'AS9100D',status:'Negotiating'},
+  {name:'Heat Control Inc.',cat:'Systems',comp:'De-icing & Anti-icing Systems (wing+nacelle)',country:'USA',val:55,cert:'AS9100D',status:'Negotiating'},
+  {name:'Parker Hannifin',cat:'Systems',comp:'Hydraulic Systems, Outlet Tubes, Pneumatics',country:'USA',val:82,cert:'AS9100D',status:'Negotiating'},
+  {name:'Thales Group',cat:'Avionics & Navigation',comp:'Air Traffic Surveillance ×2, FMS, IRS',country:'France',val:98,cert:'AS9100D',status:'Negotiating'},
+];
+
+const COMPONENTS_DATA = [
+  {name:'Fuselage (complete assembly)',sys:'Structures',qty:1,unit:8.4,sup:'Spirit AeroSystems',room:'Medium'},
+  {name:'Wing Box & Wing Panels',sys:'Structures',qty:2,unit:3.8,sup:'GKN Aerospace',room:'High'},
+  {name:'High-Aspect-Ratio Wings w/ Curved Wingtips',sys:'Structures',qty:1,unit:2.2,sup:'GKN Aerospace',room:'Medium'},
+  {name:'Empennage (H-Stab + V-Stab + Tail)',sys:'Structures',qty:1,unit:3.2,sup:'Stelia Aerospace',room:'Medium'},
+  {name:'Horizontal Stabilizer Panels',sys:'Structures',qty:2,unit:0.55,sup:'Ducommun',room:'Low'},
+  {name:'Engine Nacelles & Pylons',sys:'Propulsion',qty:2,unit:1.4,sup:'Safran Nacelles',room:'High'},
+  {name:'Rolls-Royce Trent XWB (engine)',sys:'Propulsion',qty:2,unit:16.0,sup:'Rolls-Royce (direct)',room:'Low'},
+  {name:'Main Landing Gear (complete)',sys:'Landing Gear',qty:2,unit:1.8,sup:'Safran Landing Systems',room:'Medium'},
+  {name:'Nose Landing Gear',sys:'Landing Gear',qty:1,unit:0.6,sup:'Safran Landing Systems',room:'Medium'},
+  {name:'Fly-By-Wire System',sys:'Flight Controls',qty:1,unit:1.2,sup:'Collins Aerospace',room:'Medium'},
+  {name:'Primary Flight Control Computers ×4',sys:'Flight Controls',qty:4,unit:0.28,sup:'Collins Aerospace',room:'Low'},
+  {name:'Backup/Alternate Flight Computers',sys:'Flight Controls',qty:2,unit:0.18,sup:'Collins Aerospace',room:'Low'},
+  {name:'FBW Actuators (full set)',sys:'Flight Controls',qty:1,unit:0.88,sup:'Moog Inc.',room:'Medium'},
+  {name:'Avionics Suite (full)',sys:'Avionics & Navigation',qty:1,unit:2.1,sup:'Honeywell',room:'High'},
+  {name:'Weather Radar Antenna',sys:'Avionics & Navigation',qty:1,unit:0.32,sup:'Honeywell',room:'Low'},
+  {name:'GPS System',sys:'Avionics & Navigation',qty:1,unit:0.18,sup:'Elbit Systems',room:'Low'},
+  {name:'Air Traffic Surveillance (ADS-B) ×2',sys:'Avionics & Navigation',qty:2,unit:0.25,sup:'Thales Group',room:'Low'},
+  {name:'Collision Avoidance (TCAS) ×2',sys:'Avionics & Navigation',qty:2,unit:0.22,sup:'Elbit Systems',room:'Low'},
+  {name:'Ku-Band Satcom Antenna',sys:'Avionics & Navigation',qty:1,unit:0.42,sup:'Cobham Aviation',room:'Medium'},
+  {name:'Navigation Lights',sys:'Avionics & Navigation',qty:1,unit:0.06,sup:'Aerolia',room:'Low'},
+  {name:'Aircraft Lighting (full)',sys:'Avionics & Navigation',qty:1,unit:0.08,sup:'Aerolia',room:'Low'},
+  {name:'Fire Extinguishing Bottles ×2',sys:'Safety & Emergency',qty:2,unit:0.12,sup:'UTC Aerospace',room:'Low'},
+  {name:'Flight Data Recorder ×2',sys:'Safety & Emergency',qty:2,unit:0.14,sup:'L3Harris',room:'Low'},
+  {name:'Emergency Locator Transmitter ×2',sys:'Safety & Emergency',qty:2,unit:0.09,sup:'Elbit Systems',room:'Low'},
+  {name:'RAM Air Turbine (RAT)',sys:'Safety & Emergency',qty:1,unit:0.22,sup:'Hutchinson',room:'Medium'},
+  {name:'Emergency Systems (slides, O2, etc.)',sys:'Safety & Emergency',qty:1,unit:0.32,sup:'UTC Fire & Security',room:'Low'},
+  {name:'Electrical Power Centers ×6',sys:'Utilities & Power',qty:6,unit:0.24,sup:'Safran Electrical',room:'Medium'},
+  {name:'GPU Interface System',sys:'Utilities & Power',qty:1,unit:0.18,sup:'Safran Power Units',room:'Low'},
+  {name:'De-icing & Anti-icing Systems',sys:'Utilities & Power',qty:1,unit:0.55,sup:'Heat Control Inc.',room:'High'},
+  {name:'Hydraulic System (full)',sys:'Utilities & Power',qty:1,unit:0.82,sup:'Parker Hannifin',room:'Medium'},
+  {name:'Outlet Tubes & Outflow Valve',sys:'Utilities & Power',qty:1,unit:0.14,sup:'Hutchinson/Parker',room:'Low'},
+  {name:'Water Tank 100 gallon',sys:'Utilities & Power',qty:1,unit:0.06,sup:'Zodiac Water',room:'Low'},
+  {name:'Waste Tank 100 gallon',sys:'Utilities & Power',qty:1,unit:0.06,sup:'Zodiac Water',room:'Low'},
+  {name:'Gray Water Drain Mast',sys:'Utilities & Power',qty:1,unit:0.02,sup:'Zodiac Water',room:'Low'},
+  {name:'Water Mixer',sys:'Utilities & Power',qty:1,unit:0.01,sup:'Zodiac Water',room:'Low'},
+  {name:'Cabin Interior Package',sys:'Interior & Cabin',qty:1,unit:1.20,sup:'Diehl Aviation',room:'High'},
+  {name:'Galley Systems (full set)',sys:'Interior & Cabin',qty:1,unit:0.42,sup:'Diehl Aviation',room:'High'},
+  {name:'Passenger Seats',sys:'Interior & Cabin',qty:1,unit:0.65,sup:'Zodiac Aerospace',room:'High'},
+  {name:'Cargo Space Systems',sys:'Interior & Cabin',qty:1,unit:0.28,sup:'Diehl Aviation',room:'Medium'},
+  {name:'Air Traffic Ctrl Navigation Sys.',sys:'Avionics & Navigation',qty:1,unit:0.98,sup:'Thales Group',room:'Medium'},
+];
+
+const BUDGET_DATA = [
+  {sys:'Propulsion',alloc:980,pct:28},
+  {sys:'Structures',alloc:755,pct:21.6},
+  {sys:'Avionics & Navigation',alloc:490,pct:14},
+  {sys:'Flight Controls',alloc:280,pct:8},
+  {sys:'Interior & Cabin',alloc:315,pct:9},
+  {sys:'Landing Gear',alloc:210,pct:6},
+  {sys:'Utilities & Power',alloc:175,pct:5},
+  {sys:'Safety & Emergency',alloc:105,pct:3},
+  {sys:'Contingency Reserve',alloc:190,pct:5.4},
+];
+
+const BAR_COLORS=['#00c8ff','#0074d9','#00d68f','#f0a500','#a55df5','#ff6b9d','#ffb300','#ff4757','#7da8c9'];
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if(id==='suppliers')renderSuppliers(SUPPLIERS_DATA);
+  if(id==='components')renderComponents(COMPONENTS_DATA);
+  if(id==='budget')renderBudget();
+  if(id==='timeline')renderGantt();
+  if(id==='negotiation')renderNegotiation();
+  if(id==='contracts')renderContractPhases();
+}
+
+function openModal(id){document.getElementById('modal-'+id).classList.add('open')}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open')}
+function notify(msg){const n=document.getElementById('notification');n.textContent=msg;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2500)}
+
+function statusBadge(s){
+  const map={'Signed':'b-green','Qualified':'b-green','Under Review':'b-blue','Negotiating':'b-gold','Pending':'b-warn','RFP Sent':'b-gray','Under Evaluation':'b-warn','Contracted':'b-green'};
+  return `<span class="badge ${map[s]||'b-gray'}">${s}</span>`;
+}
+
+function renderSuppliers(data){
+  const t=document.getElementById('supplierTable');
+  const rows=data.map(s=>`<tr>
+    <td style="font-weight:500">${s.name}</td>
+    <td><span class="chip">${s.cat}</span></td>
+    <td style="font-size:11px;color:var(--muted);max-width:180px">${s.comp}</td>
+    <td>${s.country}</td>
+    <td style="font-weight:500;color:var(--gold)">$${s.val}M</td>
+    <td><span class="badge b-green">${s.cert}</span></td>
+    <td>${statusBadge(s.status)}</td>
+    <td><button class="btn btn-outline btn-sm" onclick="notify('Contract draft initiated for ${s.name}')">Contract ↗</button></td>
+  </tr>`).join('');
+  t.innerHTML=`<tr><th>Supplier</th><th>Category</th><th>Components Supplied</th><th>Country</th><th>Contract Value (50 A/C)</th><th>Cert</th><th>Status</th><th></th></tr>`+rows;
+}
+
+function filterSuppliers(){
+  const q=document.getElementById('supplierSearch').value.toLowerCase();
+  const cat=document.getElementById('catFilter').value;
+  renderSuppliers(SUPPLIERS_DATA.filter(s=>
+    (!q||(s.name+s.comp).toLowerCase().includes(q))&&
+    (!cat||s.cat===cat)
+  ));
+}
+
+function filterComponents(){
+  const q=document.getElementById('compSearch').value.toLowerCase();
+  const sys=document.getElementById('sysFilter').value;
+  renderComponents(COMPONENTS_DATA.filter(c=>
+    (!q||c.name.toLowerCase().includes(q))&&
+    (!sys||c.sys===sys)
+  ));
+}
+
+function renderComponents(data){
+  const roomColor={High:'b-green',Medium:'b-gold',Low:'b-gray'};
+  const rows=data.map((c,i)=>{
+    const total50=(c.unit*c.qty*50).toFixed(2);
+    return`<tr>
+      <td style="color:var(--muted)">${i+1}</td>
+      <td style="font-weight:500">${c.name}</td>
+      <td><span class="chip" style="font-size:10px">${c.sys}</span></td>
+      <td style="text-align:center">${c.qty}</td>
+      <td style="color:var(--gold)">$${c.unit.toFixed(2)}M</td>
+      <td style="color:var(--accent)">$${total50}M</td>
+      <td style="font-size:11px;color:var(--muted)">${c.sup}</td>
+      <td><span class="badge ${roomColor[c.room]}">${c.room}</span></td>
+    </tr>`;
+  }).join('');
+  const total=data.reduce((a,c)=>a+c.unit*c.qty*50,0);
+  document.getElementById('compTable').innerHTML=`<tr><th>#</th><th>Component / Section</th><th>System</th><th>Qty/A/C</th><th>Unit Price (Est.)</th><th>50 A/C Total</th><th>Supplier</th><th>Negotiation Room</th></tr>`+rows;
+  document.getElementById('costSummary').innerHTML=`
+    <div class="g3" style="gap:10px">
+      <div class="card kpi"><div class="kpi-val">$${total.toFixed(0)}M</div><div class="kpi-lbl">FILTERED SUBTOTAL (50 A/C)</div></div>
+      <div class="card kpi"><div class="kpi-val">$3,500M</div><div class="kpi-lbl">TOTAL BUDGET</div></div>
+      <div class="card kpi"><div class="kpi-val" style="color:${(3500-total)>0?'var(--success)':'var(--danger)'}">$${(3500-total).toFixed(0)}M</div><div class="kpi-lbl">REMAINING HEADROOM</div></div>
+    </div>`;
+}
+
+function renderBudget(){
+  const html=BUDGET_DATA.map((b,i)=>`
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:500">${b.sys}</span>
+        <span style="font-size:12px;color:var(--gold)">$${b.alloc}M <span style="color:var(--muted)">(${b.pct}%)</span></span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${b.pct*3.3}%;background:${BAR_COLORS[i%BAR_COLORS.length]}"></div></div>
+    </div>`).join('');
+  document.getElementById('budgetBreakdown').innerHTML=html;
+}
+
+function renderGantt(){
+  const phases=[
+    {label:'Company Formation & HQ',start:0,dur:2,color:'#0074d9'},
+    {label:'Official Program Launch',start:2,dur:1,color:'#00c8ff'},
+    {label:'T-1 RFP & Supplier Selection',start:2,dur:4,color:'#f0a500'},
+    {label:'Preliminary Design (PDR)',start:4,dur:6,color:'#a55df5'},
+    {label:'T-1 Contract Negotiations',start:3,dur:5,color:'#00d68f'},
+    {label:'Critical Design Review (CDR)',start:10,dur:3,color:'#ff6b9d'},
+    {label:'Manufacturing Kickoff',start:13,dur:8,color:'#ffb300'},
+    {label:'Systems Integration & Testing',start:18,dur:6,color:'#0074d9'},
+    {label:'First Flight — Yelinha1000',start:24,dur:1,color:'#00c8ff'},
+    {label:'FAA Certification Program',start:24,dur:12,color:'#ff4757'},
+    {label:'First Customer Delivery',start:42,dur:1,color:'#00d68f'},
+  ];
+  const labels=['Q2\'26','Q3\'26','Q4\'26','Q1\'27','Q2\'27','Q3\'27','Q4\'27','Q1\'28','Q2\'28','Q3\'28','Q4\'28','Q1\'29','Q2\'29','Q3\'29','Q4\'29','Q1\'30','Q2\'30','Q3\'30','Q4\'30'];
+  const total=43;
+  const html=`<div style="overflow-x:auto">
+    <div style="min-width:600px">
+      <div style="display:grid;grid-template-columns:180px 1fr;margin-bottom:6px">
+        <div></div>
+        <div style="display:flex;gap:0">${labels.slice(0,18).map(l=>`<div style="flex:1;font-size:9px;color:var(--muted);text-align:center;font-family:'Orbitron'">${l}</div>`).join('')}</div>
+      </div>
+      ${phases.map(p=>`
+        <div style="display:grid;grid-template-columns:180px 1fr;margin-bottom:5px;align-items:center">
+          <div style="font-size:11px;color:var(--muted);padding-right:8px;line-height:1.3">${p.label}</div>
+          <div style="position:relative;height:18px">
+            <div style="position:absolute;left:${(p.start/total)*100}%;width:${(p.dur/total)*100}%;height:100%;background:${p.color};border-radius:3px;opacity:0.85;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--navy);overflow:hidden;white-space:nowrap;padding:0 4px">${p.dur>2?p.label:''}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+  document.getElementById('gantt').innerHTML=html;
+}
+
+function renderContractPhases(){
+  const phases=[
+    {n:1,title:'Market Survey & RFI',desc:'Issue Request for Information to 80+ qualified aerospace suppliers. Assess capability, capacity, financial health, and AS9100 certification status.',dur:'4 weeks'},
+    {n:2,title:'RFP — Request for Proposal',desc:'Issue detailed technical RFP with drawings (CATIA V5/V6), specs, ICD, and SOW. NDA required before receipt. Bid bond of 1% contract value.',dur:'8 weeks'},
+    {n:3,title:'Technical & Commercial Evaluation',desc:'Cross-functional evaluation by CDO, CTO, Lead Structures, Head Avionics. Score: Technical 60% / Price 30% / Risk 10%. Shortlist 2–3 suppliers per category.',dur:'6 weeks'},
+    {n:4,title:'Negotiation & Price Agreement',desc:'CFO + Head Legal lead commercial negotiation. Use should-cost model, volume leverage (50 A/C), and multi-year commitment to drive 8–14% savings vs initial quote.',dur:'4–8 weeks'},
+    {n:5,title:'Contract Drafting & Legal Review',desc:'Head of Legal drafts FFP/CPFF contract per Delaware General Corporation Law (DGCL) requirements, with Board-authorized signing authority. Includes: delivery schedule, liquidated damages ($50K/day delay), quality plan, DDP or EXW Incoterms, IP clauses, FAA compliance, Delaware governing-law clause.',dur:'3 weeks'},
+    {n:6,title:'Signature & Kickoff',desc:'CEO + Supplier VP co-sign. Program kickoff meeting within 10 days. Supplier appointed a dedicated YELINHAWORLD Program Manager. Monthly SRM reviews initiated.',dur:'1 week'},
+  ];
+  document.getElementById('contractPhases').innerHTML=phases.map(p=>`
+    <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">
+      <div style="width:26px;height:26px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:11px;font-weight:700;flex-shrink:0">${p.n}</div>
+      <div>
+        <div style="font-weight:500;font-size:12px;color:var(--text)">${p.title} <span class="badge b-gray" style="margin-left:6px">${p.dur}</span></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px;line-height:1.6">${p.desc}</div>
+      </div>
+    </div>`).join('');
+}
+
+const NEG_LEVERS=[
+  {id:'vol',label:'Volume Commitment',min:10,max:50,val:50,unit:' aircraft',effect:0.18},
+  {id:'pay',label:'Advance Payment (%)',min:0,max:30,val:15,unit:'%',effect:0.12},
+  {id:'dur',label:'Contract Duration (yrs)',min:2,max:10,val:7,unit:' yrs',effect:0.10},
+  {id:'sole',label:'Sole-Source Preference',min:0,max:1,val:0,unit:'',effect:0.08},
+  {id:'esc',label:'Escalation Cap (%/yr)',min:1,max:5,val:2,unit:'%',effect:-0.06},
+];
+let negState={vol:50,pay:15,dur:7,sole:0,esc:2};
+
+function renderNegotiation(){
+  document.getElementById('negLevers').innerHTML=NEG_LEVERS.map(l=>`
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:500">${l.label}</span>
+        <span id="lv_${l.id}" style="font-size:12px;color:var(--accent)">${negState[l.id]}${l.unit}</span>
+      </div>
+      <input type="range" class="neg-slider" min="${l.min}" max="${l.max}" value="${negState[l.id]}" 
+        oninput="updateLever('${l.id}',this.value,'${l.unit}')" style="width:100%;accent-color:var(--accent)">
+    </div>`).join('')+
+    `<div style="margin-top:8px"><button class="btn btn-gold" style="width:100%" onclick="notify('Negotiation scenario saved — CFO approval requested')">Submit for CFO Review ↗</button></div>`;
+  updateNegResult();
+
+  document.getElementById('negTactics').innerHTML=`
+    <div class="g2" style="gap:10px">
+      ${[
+        {t:'Should-Cost Modeling',d:'Build internal bottom-up cost model for each component. Benchmark supplier quote against your model. Challenge any variance >15%.'},
+        {t:'Competitive Tension',d:'Invite 2–3 suppliers per category. Never reveal you have a preference. Let competition drive pricing down 8–12%.'},
+        {t:'Volume Bundling',d:'Bundle related components (e.g. nacelles + pylons) with one supplier to increase deal size and leverage better unit economics.'},
+        {t:'Multi-Year Commitment',d:'Offer 7–10 year exclusivity in exchange for better pricing, priority capacity, and co-investment in tooling (amortized in unit price).'},
+        {t:'Escalation Control',d:'Cap price escalation at CPI+1% per year. Lock in raw material price for Year 1–2 using forward contracts agreed with supplier.'},
+        {t:'Liquidated Damages',d:'Include $50,000/day delay penalty after 15-day grace period. Creates supplier discipline and protects 2028 first flight date.'},
+      ].map(t=>`<div class="card" style="padding:12px"><div style="font-size:12px;font-weight:500;color:var(--accent);margin-bottom:5px">${t.t}</div><div style="font-size:11px;color:var(--muted);line-height:1.6">${t.d}</div></div>`).join('')}
+    </div>`;
+}
+
+function updateLever(id,val,unit){
+  negState[id]=parseFloat(val);
+  document.getElementById('lv_'+id).textContent=parseFloat(val)+unit;
+  updateNegResult();
+}
+
+function updateNegResult(){
+  const base=70;
+  let savings=0;
+  savings+=((negState.vol/50)*0.18*100);
+  savings+=((negState.pay/30)*0.12*100)*0.4;
+  savings+=((negState.dur/10)*0.10*100)*0.5;
+  savings+=(negState.sole*0.08*100)*0.5;
+  savings-=((5-negState.esc)/4*0.06*100)*0.3;
+  savings=Math.min(Math.max(savings,0),14);
+  const negotiated=(base*(1-savings/100)).toFixed(2);
+  const color=savings>10?'var(--success)':savings>5?'var(--gold)':'var(--danger)';
+  document.getElementById('negResult').innerHTML=`
+    <div style="text-align:center;padding:12px 0">
+      <div style="font-family:'Orbitron';font-size:32px;font-weight:700;color:${color}">${savings.toFixed(1)}%</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.5px">ESTIMATED SAVINGS VS INITIAL QUOTE</div>
+      <hr class="divider">
+      <div class="g2" style="gap:10px;margin-top:8px">
+        <div class="card kpi"><div class="kpi-val">$70.00M</div><div class="kpi-lbl">SUPPLIER QUOTE/A/C</div></div>
+        <div class="card kpi"><div class="kpi-val" style="color:var(--success)">$${negotiated}M</div><div class="kpi-lbl">NEGOTIATED TARGET</div></div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--muted)">
+        ${savings>=10?'<span class="badge b-green">Excellent position — proceed to contract</span>':savings>=5?'<span class="badge b-gold">Acceptable — push on volume lever</span>':'<span class="badge b-red">Weak — increase commitment levers</span>'}
+      </div>
+    </div>`;
+}
+
+let contractState=null;
+let pendingSignRole=null;
+
+function generateContract(){
+  const s=document.getElementById('c_supplier').value||'[SUPPLIER]';
+  const c=document.getElementById('c_comp').value||'[COMPONENT]';
+  const p=document.getElementById('c_price').value||'[PRICE]';
+  const q=document.getElementById('c_qty').value||'50';
+  const del=document.getElementById('c_del').value||'[DELIVERY]';
+  const type=document.getElementById('c_type').value;
+  const clause=document.getElementById('c_clause').value;
+  const total=(parseFloat(p)||0)*parseInt(q||50);
+  contractState={
+    ref:'YW-SC-'+(Math.floor(Math.random()*9000)+1000),
+    s,c,p,q,del,type,clause,total,
+    buyerSig:null,sellerSig:null
+  };
+  renderContractContent();
+  notify('Contract draft generated — reference '+contractState.ref);
+}
+
+function renderContractContent(){
+  if(!contractState)return;
+  const cs=contractState;
+  const fullyExecuted=cs.buyerSig&&cs.sellerSig;
+  document.getElementById('contractOutput').style.display='block';
+  document.getElementById('contractContent').innerHTML=`
+    <div style="background:rgba(0,200,255,0.04);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Sans';line-height:1.9">
+      <div style="text-align:center;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:10px">
+        <div style="font-family:'Orbitron';font-size:13px;color:var(--accent);letter-spacing:1px">SUPPLY AGREEMENT — YELINHAWORLD, INC.</div>
+        <div style="font-size:11px;color:var(--muted)">YELINHA1000 PROGRAM · DELAWARE C-CORP · ${fullyExecuted?'FULLY EXECUTED':'DRAFT v1.0'}</div>
+      </div>
+      <div style="font-size:12px">
+        <b style="color:var(--text)">PARTIES:</b><br>
+        Buyer: YELINHAWORLD, INC., a corporation duly organized and existing under the laws of the State of Delaware (hereafter "Buyer")<br>
+        Seller: ${cs.s} (hereafter "Supplier")<br><br>
+        <b style="color:var(--text)">SUBJECT MATTER:</b> Supply of ${cs.c} for the Yelinha1000 wide-body aircraft program.<br><br>
+        <b style="color:var(--text)">CONTRACT TYPE:</b> ${cs.type}<br>
+        <b style="color:var(--text)">UNIT PRICE:</b> USD $${cs.p}M per aircraft unit<br>
+        <b style="color:var(--text)">QUANTITY:</b> ${cs.q} aircraft (deliverable per agreed delivery schedule)<br>
+        <b style="color:var(--text)">TOTAL CONTRACT VALUE:</b> USD $${isNaN(cs.total)?'TBD':cs.total.toFixed(1)}M<br><br>
+        <b style="color:var(--text)">DELIVERY:</b> First article delivery by ${cs.del}. Final delivery per ABS (Aircraft Build Schedule).<br>
+        <b style="color:var(--text)">INCOTERMS:</b> DDP — Buyer's facility, Dallas/Fort Worth, Texas<br><br>
+        <b style="color:var(--text)">KEY CLAUSES:</b><br>
+        • Governing Law & Jurisdiction: This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to conflict-of-laws principles; exclusive venue and jurisdiction in the courts of the State of Delaware (including the Delaware Court of Chancery for equitable matters)<br>
+        • Corporate Authority: Buyer is a Delaware corporation in good standing under the Delaware General Corporation Law (DGCL); execution of this Agreement has been duly authorized by Buyer's Board of Directors and constitutes a binding obligation of the corporation<br>
+        • ${cs.clause}<br>
+        • Liquidated Damages: USD $50,000 per calendar day beyond agreed delivery date (after 15-day grace period)<br>
+        • Quality: Supplier shall maintain AS9100D certification throughout contract term<br>
+        • FAA Compliance: All deliverables shall conform to FAA FAR Part 25 and applicable TSO requirements<br>
+        • First Article Inspection (FAI) required per AS9102 before series production<br>
+        • YELINHAWORLD DER (FAA) retains right of inspection at Supplier facility<br>
+        • Escalation: Price escalation capped at CPI + 1.5% per annum from Year 2<br>
+        • IP: All YELINHAWORLD-furnished designs remain Buyer's IP. Supplier retains manufacturing know-how<br>
+        • Termination for Convenience: 90-day notice; Supplier entitled to costs incurred + 5% fee<br><br>
+        <b style="color:var(--text)">GOVERNANCE:</b> Monthly SRM reviews. Quarterly Business Reviews (QBR). Annual supplier summit hosted by YELINHAWORLD.<br>
+      </div>
+      <hr class="divider">
+      <div style="font-size:12px">
+        <b style="color:var(--text)">SIGNATURES:</b>
+        <div class="g2" style="gap:10px;margin-top:10px">
+          <div class="card" style="padding:12px">
+            <div style="font-size:10px;color:var(--muted);letter-spacing:.5px;margin-bottom:6px">BUYER — YELINHAWORLD, INC.</div>
+            ${cs.buyerSig
+              ?`<div style="font-family:'Orbitron';font-size:12px;color:var(--success)">✓ ${cs.buyerSig.name}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${cs.buyerSig.title?cs.buyerSig.title+'<br>':''}Signed ${cs.buyerSig.date}</div>`
+              :`<button class="btn btn-outline btn-sm" style="width:100%" onclick="openSignModal('buyer')">Sign as Buyer ↗</button>`}
+          </div>
+          <div class="card" style="padding:12px">
+            <div style="font-size:10px;color:var(--muted);letter-spacing:.5px;margin-bottom:6px">SELLER — ${cs.s}</div>
+            ${cs.sellerSig
+              ?`<div style="font-family:'Orbitron';font-size:12px;color:var(--success)">✓ ${cs.sellerSig.name}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${cs.sellerSig.title?cs.sellerSig.title+'<br>':''}Signed ${cs.sellerSig.date}</div>`
+              :`<button class="btn btn-outline btn-sm" style="width:100%" onclick="openSignModal('seller')">Sign as Seller ↗</button>`}
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          ${fullyExecuted?'<span class="badge b-green">FULLY EXECUTED</span>':'<span class="badge b-warn">AWAITING SIGNATURE(S)</span>'}
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">
+        This is an AI-generated contract summary for internal planning purposes. Final contract to be reviewed and executed by YELINHAWORLD Head of Legal and authorized signatories. Reference: ${cs.ref}
+      </div>
+      <button class="btn btn-gold" style="width:100%;margin-top:14px" onclick="downloadCleanContract()">⬇ Download Clean Contract ↗</button>
+    </div>`;
+}
+
+function openSignModal(role){
+  pendingSignRole=role;
+  document.getElementById('sigModalTitle').textContent= role==='buyer'
+    ? 'Sign as Buyer — YELINHAWORLD, INC.'
+    : `Sign as Seller — ${contractState.s}`;
+  document.getElementById('sig_name').value='';
+  document.getElementById('sig_title').value='';
+  openModal('signContract');
+}
+
+function confirmSignature(){
+  const name=document.getElementById('sig_name').value.trim();
+  const title=document.getElementById('sig_title').value.trim();
+  if(!name){notify('Please enter a full name to sign');return;}
+  const sig={name,title,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})};
+  if(pendingSignRole==='buyer')contractState.buyerSig=sig; else contractState.sellerSig=sig;
+  closeModal('signContract');
+  renderContractContent();
+  notify((pendingSignRole==='buyer'?'Buyer':'Seller')+' signature recorded');
+}
+
+function downloadCleanContract(){
+  const cs=contractState;
+  if(!cs)return;
+  const fullyExecuted=cs.buyerSig&&cs.sellerSig;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Supply Agreement ${cs.ref}</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;max-width:760px;margin:40px auto;line-height:1.7;padding:0 24px}
+  h1{font-size:18px;text-align:center;letter-spacing:1px;margin-bottom:4px}
+  .sub{text-align:center;font-size:11px;color:#666;margin-bottom:16px}
+  .center{text-align:center;margin-bottom:22px}
+  .watermark{font-size:11px;display:inline-block;padding:3px 12px;border-radius:4px;border:1px solid #b00020;color:#b00020}
+  .watermark.exec{border-color:#0a6e3c;color:#0a6e3c}
+  h2{font-size:13px;border-bottom:1px solid #ccc;padding-bottom:4px;margin:22px 0 8px}
+  ul{margin:6px 0 6px 18px}
+  li{margin-bottom:4px}
+  .sig-block{display:flex;justify-content:space-between;gap:50px;margin-top:36px}
+  .sig-col{flex:1}
+  .sig-name{font-family:'Brush Script MT',cursive;font-size:22px;min-height:28px}
+  .sig-line{border-top:1px solid #333;margin-top:6px;padding-top:6px;font-size:11px;color:#333}
+  .footer{margin-top:34px;font-size:10px;color:#888;border-top:1px solid #ddd;padding-top:8px}
+  @media print{body{margin:0;padding:20px}}
+</style></head><body>
+  <h1>SUPPLY AGREEMENT — YELINHAWORLD, INC.</h1>
+  <div class="sub">YELINHA1000 PROGRAM · DELAWARE C-CORPORATION</div>
+  <div class="center"><span class="watermark${fullyExecuted?' exec':''}">${fullyExecuted?'EXECUTED AGREEMENT':'DRAFT — NOT YET FULLY EXECUTED'}</span></div>
+
+  <h2>PARTIES</h2>
+  <p><b>Buyer:</b> YELINHAWORLD, INC., a corporation duly organized and existing under the laws of the State of Delaware ("Buyer")<br>
+  <b>Seller:</b> ${cs.s} ("Supplier")</p>
+
+  <h2>SUBJECT MATTER</h2>
+  <p>Supply of ${cs.c} for the Yelinha1000 wide-body aircraft program.</p>
+
+  <h2>COMMERCIAL TERMS</h2>
+  <ul>
+    <li>Contract Type: ${cs.type}</li>
+    <li>Unit Price: USD $${cs.p}M per aircraft unit</li>
+    <li>Quantity: ${cs.q} aircraft</li>
+    <li>Total Contract Value: USD $${isNaN(cs.total)?'TBD':cs.total.toFixed(1)}M</li>
+    <li>Delivery: First article delivery by ${cs.del}; final delivery per ABS (Aircraft Build Schedule)</li>
+    <li>Incoterms: DDP — Buyer's facility, Dallas/Fort Worth, Texas</li>
+  </ul>
+
+  <h2>KEY CLAUSES</h2>
+  <ul>
+    <li>Governing Law & Jurisdiction: State of Delaware, including the Delaware Court of Chancery for equitable matters</li>
+    <li>Corporate Authority: execution duly authorized by Buyer's Board of Directors under the Delaware General Corporation Law (DGCL)</li>
+    <li>${cs.clause}</li>
+    <li>Liquidated Damages: USD $50,000 per calendar day beyond agreed delivery date (after 15-day grace period)</li>
+    <li>Quality: Supplier shall maintain AS9100D certification throughout contract term</li>
+    <li>FAA Compliance: all deliverables shall conform to FAA FAR Part 25 and applicable TSO requirements</li>
+    <li>First Article Inspection (FAI) required per AS9102 before series production</li>
+    <li>Escalation: price escalation capped at CPI + 1.5% per annum from Year 2</li>
+    <li>IP: all YELINHAWORLD-furnished designs remain Buyer's IP; Supplier retains manufacturing know-how</li>
+    <li>Termination for Convenience: 90-day notice; Supplier entitled to costs incurred + 5% fee</li>
+  </ul>
+
+  <h2>GOVERNANCE</h2>
+  <p>Monthly SRM reviews. Quarterly Business Reviews (QBR). Annual supplier summit hosted by YELINHAWORLD.</p>
+
+  <h2>SIGNATURES</h2>
+  <div class="sig-block">
+    <div class="sig-col">
+      <div class="sig-name">${cs.buyerSig?cs.buyerSig.name:''}</div>
+      <div class="sig-line">Buyer — YELINHAWORLD, INC.<br>${cs.buyerSig?(cs.buyerSig.title?cs.buyerSig.title+'<br>':'')+'Signed: '+cs.buyerSig.date:'Not yet signed'}</div>
+    </div>
+    <div class="sig-col">
+      <div class="sig-name">${cs.sellerSig?cs.sellerSig.name:''}</div>
+      <div class="sig-line">Seller — ${cs.s}<br>${cs.sellerSig?(cs.sellerSig.title?cs.sellerSig.title+'<br>':'')+'Signed: '+cs.sellerSig.date:'Not yet signed'}</div>
+    </div>
+  </div>
+
+  <div class="footer">Reference: ${cs.ref} · Generated by YELINHAWORLD Supply Chain Portal · Provided for internal planning purposes; final execution subject to review by YELINHAWORLD Head of Legal.</div>
+</body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`YELINHAWORLD_Contract_${cs.ref}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  notify('Clean contract document downloaded');
+}
+
+function addSupplier(){
+  const s={
+    name:document.getElementById('ns_name').value||'New Supplier',
+    cat:document.getElementById('ns_cat').value,
+    comp:document.getElementById('ns_comp').value||'TBD',
+    country:document.getElementById('ns_country').value||'USA',
+    val:parseInt(document.getElementById('ns_val').value)||0,
+    cert:document.getElementById('ns_cert').value==='Yes'?'AS9100D':'Pending',
+    status:document.getElementById('ns_status').value
+  };
+  SUPPLIERS_DATA.unshift(s);
+  closeModal('addSupplier');
+  notify(s.name+' added to T-1 supplier registry');
+  renderSuppliers(SUPPLIERS_DATA);
+}
+
+function renderDashboardCharts(){
+  const budgetEl=document.getElementById('budgetChart');
+  budgetEl.innerHTML=BUDGET_DATA.map((b,i)=>`
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span style="font-size:11px;color:var(--muted)">${b.sys}</span>
+        <span style="font-size:11px;color:var(--gold)">$${b.alloc}M</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${b.pct*3.3}%;background:${BAR_COLORS[i%BAR_COLORS.length]}"></div></div>
+    </div>`).join('');
+
+  const statCounts={Signed:0,Qualified:0,Negotiating:0,'Under Review':0,'RFP Sent':0,'Under Evaluation':0};
+  SUPPLIERS_DATA.forEach(s=>{if(statCounts[s.status]!==undefined)statCounts[s.status]++;});
+  const statEl=document.getElementById('supplierStatus');
+  statEl.innerHTML=Object.entries(statCounts).filter(([,v])=>v>0).map(([k,v])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      ${statusBadge(k)}
+      <div class="prog-bar" style="flex:1;margin-top:0"><div class="prog-fill" style="width:${(v/SUPPLIERS_DATA.length)*100}%;background:var(--accent)"></div></div>
+      <span style="font-size:12px;font-weight:500;color:var(--text);min-width:20px">${v}</span>
+    </div>`).join('');
+}
+
+renderDashboardCharts();
+</script>
+<div id="navPasswordOverlay" style="display:none;position:fixed;inset:0;background:rgba(4,14,31,0.88);z-index:9999;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif">
+  <div style="background:#0c1830;border:1px solid #1f3a5f;border-radius:10px;padding:28px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,0.6)">
+    <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:#00c8ff;letter-spacing:1px;margin-bottom:6px">ACCESS VERIFICATION</div>
+    <div style="font-size:11px;color:#8aa0b8;margin-bottom:16px">Enter password to leave this platform.</div>
+    <input type="password" id="navPasswordInput" placeholder="••••" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #2a4a6f;background:#08101e;color:#fff;font-size:14px;margin-bottom:8px;box-sizing:border-box" onkeydown="if(event.key==='Enter')confirmNavPassword()">
+    <div id="navPasswordError" style="color:#ff5d5d;font-size:11px;min-height:14px;margin-bottom:10px"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="cancelNavPassword()" style="flex:1;padding:9px;border-radius:6px;border:1px solid #2a4a6f;background:transparent;color:#cfe9ff;cursor:pointer;font-size:12px">Cancel</button>
+      <button onclick="confirmNavPassword()" style="flex:1;padding:9px;border-radius:6px;border:none;background:#00c8ff;color:#001018;cursor:pointer;font-weight:600;font-size:12px">Confirm</button>
+    </div>
+  </div>
+</div>
+<script>
+let _navPendingUrl=null;
+function secureNavigate(url){
+  _navPendingUrl=url;
+  document.getElementById('navPasswordInput').value='';
+  document.getElementById('navPasswordError').textContent='';
+  document.getElementById('navPasswordOverlay').style.display='flex';
+  setTimeout(()=>document.getElementById('navPasswordInput').focus(),50);
+}
+function cancelNavPassword(){
+  _navPendingUrl=null;
+  document.getElementById('navPasswordOverlay').style.display='none';
+}
+function confirmNavPassword(){
+  const val=document.getElementById('navPasswordInput').value;
+  if(val==='2005'){
+    const url=_navPendingUrl;
+    document.getElementById('navPasswordOverlay').style.display='none';
+    if(url) window.location.href=url;
+  } else {
+    document.getElementById('navPasswordError').textContent='Incorrect password. Access denied.';
+  }
+}
+</script>
+</body></html>
